@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+.env
+.env.*
+
+# Local reference and presentation files (not used by the app)
+/ScreenShot_2026-09-23_220549_731.png
+/reference-3d-preview.mov
+/演示文稿1.pptx
