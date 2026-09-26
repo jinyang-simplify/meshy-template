@@ -42,3 +42,5 @@ npm run build
 ## Asset note
 
 Template visuals in this interview concept are locally stored references from Meshy's public Creative Lab experience. They are used only to make the product flow representative of the existing Meshy ecosystem.
+
+This is an unofficial, non-commercial product concept. It is not affiliated with or endorsed by Meshy. Meshy trademarks and referenced visual assets remain the property of their respective owners.
