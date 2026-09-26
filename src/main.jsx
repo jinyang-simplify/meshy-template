@@ -85,6 +85,23 @@ const templates = [
   officialCard: officialCardImages[template.id]
 }));
 
+const breakfastTemplate = {
+  id: "breakfast-magnet",
+  title: "Breakfast Magnet",
+  description: "Turn a favorite breakfast photo into a colorful 3D keepsake — layered food details, hand-painted texture, and a print-ready flat-backed model.",
+  category: "Objects",
+  outcome: "Gift",
+  tag: "3D Printing",
+  time: "~2 min",
+  credits: "36 credits",
+  image: "/assets/templates/tutorial-breakfast-model-glb.png",
+  hover: "/assets/templates/tutorial-breakfast-photo.jpg",
+  fit: "One plated meal · clear overhead photo",
+  accent: "#d9ff66",
+  author: "Meshy_Official",
+  uses: 12
+};
+
 const categories = ["All", "People", "Pets", "Objects", "Places", "Drawings"];
 const outcomes = ["All outcomes", "3D Print", "Gift", "Collectible", "Game-ready", "Just for Fun"];
 
@@ -101,10 +118,12 @@ function Icon({ name, size = 18 }) {
     check: <path d="m5 12 4 4L19 6"/>,
     caret: <path d="m8 10 4 4 4-4"/>,
     plus: <><path d="M12 5v14"/><path d="M5 12h14"/></>,
+    saveTemplate: <><path d="M6 3.5h9.5A2.5 2.5 0 0 1 18 6v14l-6-3.5L6 20V3.5Z"/><path d="m19 10.5.8 2.1 2.2.9-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.9.8-2.1Z"/></>,
     gift: <><path d="M4 10h16v10H4z"/><path d="M2.5 6.5h19v4h-19z"/><path d="M12 6.5V20"/><path d="M12 6.5H8.5a2.5 2.5 0 1 1 2.5-2.5L12 6.5Z"/><path d="M12 6.5h3.5A2.5 2.5 0 1 0 13 4L12 6.5Z"/></>,
     help: <><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.45 2.45 0 0 1 4.72.9c0 1.8-2.42 2.08-2.42 3.7"/><path d="M12 17h.01"/></>,
     bell: <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></>,
-    settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34A1.7 1.7 0 0 0 14 20.93V21h-4v-.08A1.7 1.7 0 0 0 8.94 19.4a1.7 1.7 0 0 0-1.88.34L7 19.8 4.17 17l.06-.06A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3.08 14H3v-4h.08A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.88L4.2 7.06 7.03 4.2l.06.06A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3.08V3h4v.08A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.17.62.74 1 1.56 1H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"/></>
+    settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34A1.7 1.7 0 0 0 14 20.93V21h-4v-.08A1.7 1.7 0 0 0 8.94 19.4a1.7 1.7 0 0 0-1.88.34L7 19.8 4.17 17l.06-.06A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3.08 14H3v-4h.08A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.88L4.2 7.06 7.03 4.2l.06.06A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3.08V3h4v.08A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.17.62.74 1 1.56 1H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"/></>,
+    printer: <><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/><path d="M18 12h.01"/></>
   };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
@@ -147,15 +166,29 @@ function Header({ route }) {
 }
 
 function TemplateCard({ template, onOpen, compact = false }) {
-  return <article className={`template-card ${compact ? "compact" : ""}`} style={{"--accent": template.accent}}>
+  const isBreakfast = template.id === "breakfast-magnet";
+  return <article className={`template-card ${compact ? "compact" : ""} ${isBreakfast ? "breakfast-template-card" : ""}`} style={{"--accent": template.accent}}>
     <button className="card-media" onClick={() => onOpen(template)} aria-label={`Open ${template.title}`}>
-      {template.officialCard
+      {isBreakfast
+        ? <><img className="template-source" src={template.hover} alt="Breakfast source photo"/><img className="template-result breakfast-template-model" src={template.image} alt="Breakfast 3D model"/><span className="card-tag">{template.tag}</span><span className="template-card-title">{template.title}</span></>
+        : template.officialCard
         ? <><img className="official-card-image" src={template.officialCard} alt={`${template.title} official template`} /><span className="card-tag">{template.tag}</span><span className="template-card-title">{template.title}</span></>
         : <><img className="template-source" src={template.hover} alt={`${template.title} source`} /><img className="template-result" src={template.image} alt={`${template.title} result`} /><span className="card-tag">{template.tag}</span><span className="template-card-title">{template.title}</span></>}
     </button>
     <div className="template-author-row">
       <span className="template-author"><img src="/assets/brand/meshy-mark.webp" alt=""/>{template.author}</span>
-      <span className="template-uses"><Icon name="cube" size={16}/>{template.uses}</span>
+      <span className="template-uses"><Icon name="saveTemplate" size={17}/>{template.uses}</span>
+    </div>
+    <div className="template-hover-panel">
+      <div className="template-hover-title-row">
+        <h3>{template.title}</h3>
+        <button type="button" onClick={() => onOpen(template)}><Icon name="sparkle" size={17}/>Use Template</button>
+      </div>
+      <p>{template.description}</p>
+      <div className="template-hover-meta">
+        <span className="template-author"><img src="/assets/brand/meshy-mark.webp" alt=""/>{template.author}</span>
+        <span className="template-uses"><Icon name="saveTemplate" size={18}/>{template.uses}</span>
+      </div>
     </div>
   </article>;
 }
@@ -169,6 +202,7 @@ function HomePage({ onOpen }) {
     const track = trackRef.current;
     if (!track) return;
     const timer = window.setInterval(() => {
+      if (track.matches(":hover") || track.contains(document.activeElement)) return;
       const card = track.querySelector(".template-card");
       if (!card) return;
       const step = card.getBoundingClientRect().width + 12;
@@ -262,6 +296,37 @@ function CommunitySection() {
   </section>;
 }
 
+function OutcomeFilter({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const closeOnOutsideClick = event => {
+      if (!dropdownRef.current?.contains(event.target)) setOpen(false);
+    };
+    const closeOnEscape = event => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
+  return <div className={`outcome-filter ${open ? "open" : ""}`} ref={dropdownRef}>
+    <button className="outcome-select" type="button" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(current => !current)}>
+      <span>{value}</span><Icon name="caret" size={15}/>
+    </button>
+    {open && <div className="outcome-menu" role="listbox" aria-label="Filter by outcome">
+      {outcomes.map(option => <button key={option} type="button" role="option" aria-selected={value === option} onClick={() => { onChange(option); setOpen(false); }}>
+        <span className="outcome-check">{value === option && <Icon name="check" size={15}/>}</span><span>{option}</span>
+      </button>)}
+    </div>}
+  </div>;
+}
+
 function TemplatesPage({ onOpen }) {
   const [category, setCategory] = useState("All");
   const [outcome, setOutcome] = useState("All outcomes");
@@ -276,19 +341,56 @@ function TemplatesPage({ onOpen }) {
   }), [category, outcome, query]);
 
   return <main className="templates-page">
-    <section className="templates-hero section-shell">
-      <div className="templates-hero-copy">
-        <div className="eyebrow green"><span/>Curated 3D workflows</div>
-        <h1>One photo.<br/><em>So many possibilities.</em></h1>
-        <p>Skip the prompts. Choose a look, upload your image, and create something ready to print, play with, or share.</p>
-        <div className="hero-actions"><button className="primary-button" onClick={() => onOpen(templates[0], true)}><Icon name="upload"/>Upload a photo</button><button className="secondary-button" onClick={() => onOpen(templates[Math.floor(Math.random()*templates.length)])}><Icon name="sparkle"/>Surprise me</button></div>
+    <section className="template-tutorial section-shell" aria-label="How it works">
+      <div className="tutorial-heading">
+        <div className="eyebrow green"><span/>How it works</div>
+        <p>Pick a style, add your photo, and get a 3D model ready to preview and print.</p>
       </div>
-      <div className="hero-showcase">
-        <div className="showcase-card sc-one"><img src={templates[0].image} alt="Chibi figure example"/><span>People</span></div>
-        <div className="showcase-card sc-two"><img src={templates[2].image} alt="Pet keepsake example"/><span>Pets</span></div>
-        <div className="showcase-card sc-three"><img src={templates[5].image} alt="Lamp example"/><span>Objects</span></div>
-        <div className="showcase-badge"><strong>{templates.length}</strong><span>templates to explore</span></div>
-      </div>
+      <ol className="tutorial-steps">
+        <li>
+          <span className="tutorial-number">01</span>
+          <div className="tutorial-step-head">
+            <span className="tutorial-icon"><Icon name="sparkle" size={21}/></span>
+            <div><h2>Choose a template</h2><p>Find the style that fits what you want to make.</p></div>
+          </div>
+          <div className="tutorial-example example-templates" aria-label="Official template examples">
+            {[templates[3], breakfastTemplate, templates[11]].map((template, index) => <div className={`mini-template mini-template-${index + 1} ${template.id === "breakfast-magnet" ? "mini-breakfast-template" : ""}`} key={template.id}>
+              {template.id === "breakfast-magnet"
+                ? <><img className="mini-breakfast-source" src={template.hover} alt="Breakfast source photo"/><img className="mini-breakfast-model" src={template.image} alt="Breakfast 3D model"/></>
+                : <img src={template.officialCard} alt={template.title}/>}<span>{template.title}</span>
+            </div>)}
+          </div>
+        </li>
+        <li>
+          <span className="tutorial-number">02</span>
+          <div className="tutorial-step-head">
+            <span className="tutorial-icon"><Icon name="upload" size={21}/></span>
+            <div><h2>Upload your photo</h2><p>Use one clear image of your person, pet, or object.</p></div>
+          </div>
+          <div className="tutorial-example example-upload-flow">
+            <div className="tutorial-upload-target">
+              <span className="tutorial-upload-icon"><Icon name="upload" size={21}/></span>
+              <strong>Upload image here</strong>
+              <small>JPG, PNG or WEBP</small>
+            </div>
+            <div className="tutorial-upload-photo breakfast-photo"><img src="/assets/templates/tutorial-breakfast-photo.jpg" alt="Breakfast photo uploaded for the 3D model"/></div>
+            <span className="upload-flow-arrow"><Icon name="arrow" size={26}/></span>
+          </div>
+        </li>
+        <li>
+          <span className="tutorial-number">03</span>
+          <div className="tutorial-step-head">
+            <span className="tutorial-icon"><Icon name="printer" size={21}/></span>
+            <div><h2>Preview &amp; print</h2><p>Review the result, then download it for 3D printing.</p></div>
+          </div>
+          <div className="tutorial-example example-preview">
+            <div className="preview-status"><span className="live-dot"/>3D preview</div>
+            <img className="breakfast-glb-render" src="/assets/templates/tutorial-breakfast-model-glb.png" alt="Breakfast GLB model in the 3D preview"/>
+            <div className="preview-floor"/>
+            <div className="print-ready"><Icon name="printer" size={14}/><span><strong>Print ready</strong><small>STL · OBJ</small></span></div>
+          </div>
+        </li>
+      </ol>
     </section>
 
     <section className="catalog section-shell">
@@ -296,7 +398,7 @@ function TemplatesPage({ onOpen }) {
         <div className="search-box"><Icon name="search"/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search templates, styles, or outcomes"/><kbd>⌘ K</kbd></div>
         <div className="filter-row">
           <div className="category-tabs">{categories.map(c => <button key={c} onClick={() => setCategory(c)} className={category === c ? "selected" : ""}>{c}</button>)}</div>
-          <select value={outcome} onChange={e => setOutcome(e.target.value)} aria-label="Filter by outcome">{outcomes.map(o => <option key={o}>{o}</option>)}</select>
+          <OutcomeFilter value={outcome} onChange={setOutcome}/>
         </div>
       </div>
 
@@ -364,7 +466,7 @@ function DetailModal({ template, initialCreate, onClose }) {
           <div className="official-info-copy">
             <div className="official-title-row"><h2>{template.title}</h2><span>{template.tag}</span></div>
             <p>{template.description}</p>
-            <div className="official-save-count"><Icon name="cube" size={16}/><strong>{template.uses}</strong></div>
+            <div className="official-save-count"><Icon name="saveTemplate" size={17}/><strong>{template.uses}</strong></div>
             <div className="official-author-row"><span className="official-author"><img src="/assets/brand/meshy-mark.webp" alt=""/><strong>Meshy_Official</strong></span><button><Icon name="sparkle" size={16}/>Follow</button></div>
           </div>
         </aside>
